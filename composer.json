@@ -1,0 +1,29 @@
+{
+    "name": "adrianschubek/orm",
+    "description": "Active Record based ORM and Query Builder",
+    "type": "library",
+    "homepage": "https://adriansoftware.de/orm",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "adrian",
+            "email": "adrian.schubek@gmail.com",
+            "homepage": "https://adriansoftware.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "adrianschubek\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "doctrine/inflector": "^1.3",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.4",
+        "symfony/var-dumper": "5.0.x-dev"
+    }
+}
