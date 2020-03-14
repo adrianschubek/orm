@@ -6,7 +6,6 @@
 
 namespace adrianschubek\Database\Connection;
 
-use adrianschubek\ORM\Model;
 use PDO;
 use PDOStatement;
 
@@ -36,7 +35,7 @@ class PdoConnection implements ConnectionInterface
         return $stmnt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function prepare(string $statement)
+    public function prepare(string $statement): PDOStatement
     {
         return $this->pdo->prepare($statement);
     }

@@ -11,6 +11,8 @@ interface BuilderInterface
 {
     public function select($columns = "*"): self;
 
+    public function selectDistrinct($columns = "*"): self;
+
     public function from(string $table): self;
 
     public function where(string $column, string $value, string $operator = "="): self;
@@ -25,6 +27,12 @@ interface BuilderInterface
 
     public function orWhere(string $column, string $value, string $operator = "="): self;
 
+    public function and(): self;
+
+    public function or(): self;
+
+    public function not(): self;
+
     public function orderBy(string $column, string $order = "asc"): self;
 
     public function limit(int $start, int $offset): self;
@@ -34,6 +42,10 @@ interface BuilderInterface
     public function update(string $table, array $data): self;
 
     public function delete(string $table): self;
+
+    public function isNull(): self;
+
+    public function isNotNull(): self;
 
     public function group(BuilderInterface $builder): self;
 

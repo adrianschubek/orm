@@ -8,7 +8,9 @@ namespace adrianschubek\Database\Connection;
 
 interface ConnectionInterface
 {
-    function connection();
+    public function connection();
 
-    function query(string $statement, array $params = []);
+    public function prepare(string $statement);
+
+    public function query(string $statement, array $params = []);
 }

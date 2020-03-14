@@ -27,13 +27,12 @@ abstract class Model implements ModelInterface
         }
     }
 
-    public static function find($id)
+    public static function all()
     {
         return static::query(
             static::getQueryBuilder()
                 ->select()
-                ->from(static::getTable())
-                ->whereIn(static::$primaryKey, (array)$id)
+                ->from(self::getTable())
         );
     }
 
@@ -61,6 +60,16 @@ abstract class Model implements ModelInterface
                 Inflector::pluralize((new ReflectionClass(static::class))->getShortName())
             );
         }
+    }
+
+    public static function find($id)
+    {
+        return static::query(
+            static::getQueryBuilder()
+                ->select()
+                ->from(static::getTable())
+                ->whereIn(static::$primaryKey, (array)$id)
+        );
     }
 
     public static function create(array $values)

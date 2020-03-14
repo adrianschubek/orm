@@ -14,10 +14,11 @@ class Builder implements BuilderInterface
     use HasDatabaseConnection;
 
     protected array $query = [];
+    protected array $params = [];
 
-    public function select($fields = "*"): BuilderInterface
+    public function select($columns = "*"): BuilderInterface
     {
-        $this->query[] = "SELECT `" . implode("`, `", (array)$fields) . "`";
+        $this->query[] = "SELECT `" . implode("`, `", (array)$columns) . "`";
 
         return $this;
     }
@@ -29,44 +30,93 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function where(string $field, string $value, string $operator = "="): BuilderInterface
+    public function and(): BuilderInterface
     {
-        $this->query[] = "WHERE `$field` $operator '$value'";
+        $this->query[] = "AND";
 
         return $this;
     }
 
-    public function whereIn(string $field, array $values): BuilderInterface
+    public function or(): BuilderInterface
     {
-        $this->query[] = "WHERE $field IN ( " . implode(", ", $values) . " )";
+        $this->query[] = "OR";
 
         return $this;
     }
 
-    public function whereNotIn(string $field, array $values): BuilderInterface
+    public function not(): BuilderInterface
     {
-        $this->query[] = "WHERE $field NOT IN ( " . implode(", ", $values) . " )";
+        $this->query[] = "NOT";
 
         return $this;
     }
 
-    public function andWhere(string $field, string $value, string $operator = "="): BuilderInterface
+    public function where(string $column, string $value, string $operator = "="): BuilderInterface
     {
-        $this->query[] = "AND $field $operator $value";
+        $this->params[] = $value;
+        $this->query[] = "WHERE `$column` $operator ?";
 
         return $this;
     }
 
-    public function orWhere(string $field, string $value, string $operator = "="): BuilderInterface
+    public function whereIn(string $column, array $values): BuilderInterface
     {
-        $this->query[] = "OR $field $operator $value";
+        $this->params = [...$this->params, ...$values];
+        $this->query[] = "WHERE $column IN ( " . implode(', ', array_fill(0, count($values), '?')) . " )";
+
+        return $this;
+    }
+
+    public function whereNotIn(string $column, array $values): BuilderInterface
+    {
+        $this->params = [...$this->params, ...$values];
+        $this->query[] = "WHERE $column NOT IN ( " . implode(', ', array_fill(0, count($values), '?')) . " )";
+
+        return $this;
+    }
+
+    public function andWhere(string $column, string $value, string $operator = "="): BuilderInterface
+    {
+        $this->params[] = $value;
+        $this->query[] = "AND $column $operator ?";
+
+        return $this;
+    }
+
+    public function orWhere(string $column, string $value, string $operator = "="): BuilderInterface
+    {
+        $this->params[] = $value;
+        $this->query[] = "OR $column $operator ?";
 
         return $this;
     }
 
     public function limit(int $start, int $offset): BuilderInterface
     {
-        $this->query[] = "LIMIT $start, $offset";
+        $this->params[] = $start;
+        $this->params[] = $offset;
+        $this->query[] = "LIMIT ?, ?";
+
+        return $this;
+    }
+
+    public function isNull(): BuilderInterface
+    {
+        $this->query[] = "IS NULL";
+
+        return $this;
+    }
+
+    public function selectDistrinct($columns = "*"): BuilderInterface
+    {
+        $this->query[] = "SELECT DISTINCT `" . implode("`, `", (array)$columns) . "`";
+
+        return $this;
+    }
+
+    public function isNotNull(): BuilderInterface
+    {
+        $this->query[] = "IS NOT NULL";
 
         return $this;
     }
@@ -78,6 +128,7 @@ class Builder implements BuilderInterface
         return $this;
     }
 
+//        FIXME: Prepared Stmnts
     public function insert(string $table, array $data): BuilderInterface
     {
         $keys = [];
@@ -92,6 +143,7 @@ class Builder implements BuilderInterface
         return $this;
     }
 
+    //        FIXME: Prepared Stmnts
     public function update(string $table, array $data): BuilderInterface
     {
         $keys = [];
@@ -136,11 +188,27 @@ class Builder implements BuilderInterface
 
     public function get()
     {
-        return static::getConnection()->query($this->toSql());
+        return static::getConnection()->query($this->toSql(), $this->params);
     }
 
     public function toSql(): string
     {
         return implode(" ", $this->query);
+//        return static::getConnection()->prepare(implode(" ", $this->query))->queryString;
+    }
+
+    public function whereExists(BuilderInterface $builder): BuilderInterface
+    {
+        // TODO: Implement whereExists() method.
+    }
+
+    public function groupBy(string $column): BuilderInterface
+    {
+        // TODO: Implement groupBy() method.
+    }
+
+    public function having(string $column, string $value, string $operator = "="): BuilderInterface
+    {
+        // TODO: Implement having() method.
     }
 }

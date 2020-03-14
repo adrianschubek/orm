@@ -14,6 +14,8 @@ interface ModelInterface
 
     public static function getQueryBuilder(): BuilderInterface;
 
+    public static function all();
+
     public static function create(array $values);
 
     public function __get($name);
