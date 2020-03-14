@@ -31,7 +31,6 @@ class PdoConnection implements ConnectionInterface
         $stmnt = $this->prepare($statement);
         $this->execute($stmnt, $params);
 
-//        return $stmnt->fetchAll(PDO::FETCH_CLASS, Model::class);
         return $stmnt->fetchAll(PDO::FETCH_ASSOC);
     }
 

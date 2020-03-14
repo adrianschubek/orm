@@ -37,7 +37,7 @@ interface BuilderInterface
 
     public function limit(int $start, int $offset): self;
 
-    public function insert(string $table, array $data): self;
+    public function insertInto(string $table, array $data): self;
 
     public function update(string $table, array $data): self;
 
@@ -57,7 +57,11 @@ interface BuilderInterface
 
     public function toSql(): string;
 
+    public function toRawSql(): string;
+
     public function get();
 
-    public function getAsJSON();
+    public function getAsJSON(): string;
+
+    public function getParams(): array;
 }

@@ -128,27 +128,25 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-//        FIXME: Prepared Stmnts
-    public function insert(string $table, array $data): BuilderInterface
+    public function insertInto(string $table, array $data): BuilderInterface
     {
         $keys = [];
-        $values = [];
         foreach ($data as $key => $value) {
             $keys[] = "`{$key}`";
-            $values[] = "'{$value}'";
+            $this->params[] = $value;
         }
 
-        $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" . implode(", ", $values) . ")";
+        $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" . implode(', ', array_fill(0, count($keys), '?')) . ")";
 
         return $this;
     }
 
-    //        FIXME: Prepared Stmnts
     public function update(string $table, array $data): BuilderInterface
     {
         $keys = [];
         foreach ($data as $key => $value) {
-            $keys[] = "`{$key}` = '{$value}'";
+            $keys[] = "`{$key}` = ?";
+            $this->params[] = $value;
         }
 
         $this->query[] = "UPDATE $table SET " . implode(", ", $keys);
@@ -158,7 +156,7 @@ class Builder implements BuilderInterface
 
     public function group(BuilderInterface $builder): BuilderInterface
     {
-
+        $this->params[] = $builder->toSql();
 
         return $this;
     }
@@ -181,20 +179,43 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function getAsJSON()
+    public function getAsJSON(): string
     {
         return json_encode(array_values($this->get()), JSON_FORCE_OBJECT);
     }
 
     public function get()
     {
-        return static::getConnection()->query($this->toSql(), $this->params);
+        return static::getConnection()->query($this->toRawSql(), $this->params);
+    }
+
+    public function toRawSql(): string
+    {
+        return implode(" ", $this->query);
     }
 
     public function toSql(): string
     {
-        return implode(" ", $this->query);
-//        return static::getConnection()->prepare(implode(" ", $this->query))->queryString;
+        return $this->interpolateQuery($this->toRawSql(), $this->params);
+    }
+
+    private function interpolateQuery(string $query, array $params): string
+    {
+        // Fake Query
+        $keys = [];
+
+        foreach ($params as $key => &$value) {
+            $value = "'" . $value . "'";
+            if (is_string($key)) {
+                $keys[] = '/:' . $key . '/';
+            } else {
+                $keys[] = '/[?]/';
+            }
+        }
+
+        $query = preg_replace($keys, $params, $query, 1, $count);
+
+        return $query;
     }
 
     public function whereExists(BuilderInterface $builder): BuilderInterface
@@ -210,5 +231,10 @@ class Builder implements BuilderInterface
     public function having(string $column, string $value, string $operator = "="): BuilderInterface
     {
         // TODO: Implement having() method.
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }

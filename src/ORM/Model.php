@@ -32,7 +32,7 @@ abstract class Model implements ModelInterface
         return static::query(
             static::getQueryBuilder()
                 ->select()
-                ->from(self::getTable())
+                ->from(static::getTable())
         );
     }
 
