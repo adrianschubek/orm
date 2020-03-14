@@ -9,25 +9,37 @@ namespace adrianschubek\Database\QueryBuilder;
 
 interface BuilderInterface
 {
-    public function select($fields = "*"): self;
+    public function select($columns = "*"): self;
 
     public function from(string $table): self;
 
-    public function where(string $field, string $value, string $operator = "="): self;
+    public function where(string $column, string $value, string $operator = "="): self;
 
-    public function whereIn(string $field, array $values): self;
+    public function whereExists(BuilderInterface $builder): self;
 
-    public function whereNotIn(string $field, array $values): self;
+    public function whereIn(string $column, array $values): self;
 
-    public function andWhere(string $field, string $value, string $operator = "="): self;
+    public function whereNotIn(string $column, array $values): self;
 
-    public function orWhere(string $field, string $value, string $operator = "="): self;
+    public function andWhere(string $column, string $value, string $operator = "="): self;
+
+    public function orWhere(string $column, string $value, string $operator = "="): self;
+
+    public function orderBy(string $column, string $order = "asc"): self;
 
     public function limit(int $start, int $offset): self;
 
     public function insert(string $table, array $data): self;
 
     public function update(string $table, array $data): self;
+
+    public function delete(string $table): self;
+
+    public function group(BuilderInterface $builder): self;
+
+    public function groupBy(string $column): self;
+
+    public function having(string $column, string $value, string $operator = "="): self;
 
     public function raw(string $sql): self;
 

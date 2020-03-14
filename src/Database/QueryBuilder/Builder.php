@@ -104,6 +104,31 @@ class Builder implements BuilderInterface
         return $this;
     }
 
+    public function group(BuilderInterface $builder): BuilderInterface
+    {
+
+
+        return $this;
+    }
+
+    public function orderBy(string $column, string $order = "asc"): BuilderInterface
+    {
+        if (mb_strtolower($order) === "asc") {
+            $this->query[] = "ORDER BY $column ASC";
+        } else {
+            $this->query[] = "ORDER BY $column DESC";
+        }
+
+        return $this;
+    }
+
+    public function delete(string $table): BuilderInterface
+    {
+        $this->query[] = "DELETE FROM $table";
+
+        return $this;
+    }
+
     public function getAsJSON()
     {
         return json_encode(array_values($this->get()), JSON_FORCE_OBJECT);
