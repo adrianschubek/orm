@@ -25,7 +25,7 @@ interface BuilderInterface
 
     public function limit(int $start, int $offset): self;
 
-    public function insert(string $table, array $values): self;
+    public function insert(string $table, array $data): self;
 
     public function raw(string $sql): self;
 

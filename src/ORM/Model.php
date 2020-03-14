@@ -33,7 +33,7 @@ abstract class Model implements ModelInterface
             static::getQueryBuilder()
                 ->select()
                 ->from(static::getTable())
-                ->whereIn(static::$primaryKey, $id)
+                ->whereIn(static::$primaryKey, (array)$id)
         );
     }
 
@@ -48,6 +48,7 @@ abstract class Model implements ModelInterface
         foreach ((array)$objects as $obj) {
             $erg[] = new static($obj);
         }
+        if (count($erg) === 1) return $erg[0];
         return $erg;
     }
 

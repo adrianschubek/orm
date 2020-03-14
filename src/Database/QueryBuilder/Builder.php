@@ -78,9 +78,16 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function insert(string $table, array $values): BuilderInterface
+    public function insert(string $table, array $data): BuilderInterface
     {
-        $this->query[] = "INSERT INTO $table";
+        $keys = [];
+        $values = [];
+        foreach ($data as $key => $value) {
+            $keys[] = $key;
+            $values[] = $value;
+        }
+
+        $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" . implode(", ", $values) . ")";
 
         return $this;
     }
