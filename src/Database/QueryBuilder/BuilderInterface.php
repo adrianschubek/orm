@@ -27,6 +27,8 @@ interface BuilderInterface
 
     public function insert(string $table, array $data): self;
 
+    public function update(string $table, array $data): self;
+
     public function raw(string $sql): self;
 
     public function toSql(): string;

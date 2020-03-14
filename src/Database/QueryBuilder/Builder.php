@@ -17,21 +17,21 @@ class Builder implements BuilderInterface
 
     public function select($fields = "*"): BuilderInterface
     {
-        $this->query[] = "SELECT " . implode(", ", (array)$fields);
+        $this->query[] = "SELECT `" . implode("`, `", (array)$fields) . "`";
 
         return $this;
     }
 
     public function from(string $table): BuilderInterface
     {
-        $this->query[] = "FROM $table";
+        $this->query[] = "FROM `$table`";
 
         return $this;
     }
 
     public function where(string $field, string $value, string $operator = "="): BuilderInterface
     {
-        $this->query[] = "WHERE $field $operator $value";
+        $this->query[] = "WHERE `$field` $operator '$value'";
 
         return $this;
     }
@@ -83,11 +83,23 @@ class Builder implements BuilderInterface
         $keys = [];
         $values = [];
         foreach ($data as $key => $value) {
-            $keys[] = $key;
-            $values[] = $value;
+            $keys[] = "`{$key}`";
+            $values[] = "'{$value}'";
         }
 
         $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" . implode(", ", $values) . ")";
+
+        return $this;
+    }
+
+    public function update(string $table, array $data): BuilderInterface
+    {
+        $keys = [];
+        foreach ($data as $key => $value) {
+            $keys[] = "`{$key}` = '{$value}'";
+        }
+
+        $this->query[] = "UPDATE $table SET " . implode(", ", $keys);
 
         return $this;
     }
