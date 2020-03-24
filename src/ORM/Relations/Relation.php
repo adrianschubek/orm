@@ -15,8 +15,8 @@ abstract class Relation
 
     public function get($key)
     {
-        return $this->relatedModel::where(static::getRelatedKey(), $key);
+        return $this->relatedModel::where(static::getForeignKey(), $key);
     }
 
-    abstract public function getRelatedKey(): string;
+    abstract public function getForeignKey(): string;
 }

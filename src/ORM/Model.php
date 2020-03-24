@@ -100,6 +100,11 @@ abstract class Model implements ModelInterface
         return new HasMany($related, static::class);
     }
 
+    public function belongsTo(string $related): Relation
+    {
+        return new HasMany($related, static::class);
+    }
+
     public function __get($name)
     {
         if (method_exists(static::class, $name)) {

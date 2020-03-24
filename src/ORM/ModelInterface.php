@@ -27,6 +27,8 @@ interface ModelInterface
 
     public function hasMany(string $related): Relation;
 
+    public function belongsTo(string $related): Relation;
+
     public function __get($name);
 
     public function __set($name, $value);
