@@ -141,6 +141,23 @@ class Builder implements BuilderInterface
         return $this;
     }
 
+    public function insertOrUpdate(string $table, array $data): BuilderInterface
+    {
+        $keys = [];
+        $updatequery = [];
+        foreach ($data as $key => $value) {
+            $keys[] = "`{$key}`";
+            $this->params[] = $value;
+            $updatequery[] = "`$key` = '$value'";
+        }
+//        dd($keys, $this->params);
+        $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" .
+            implode(', ', array_fill(0, count($keys), '?'))
+            . ") ON DUPLICATE KEY UPDATE " . implode(", ", $updatequery);
+
+        return $this;
+    }
+
     public function update(string $table, array $data): BuilderInterface
     {
         $keys = [];
@@ -201,7 +218,7 @@ class Builder implements BuilderInterface
 
     private function interpolateQuery(string $query, array $params): string
     {
-        // Fake Query
+        // Fake Query only used for debugging
         $keys = [];
 
         foreach ($params as $key => &$value) {

@@ -39,6 +39,8 @@ interface BuilderInterface
 
     public function insertInto(string $table, array $data): self;
 
+    public function insertOrUpdate(string $table, array $data): self;
+
     public function update(string $table, array $data): self;
 
     public function delete(string $table): self;

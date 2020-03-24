@@ -8,6 +8,8 @@ namespace adrianschubek\ORM;
 
 use adrianschubek\Database\QueryBuilder\BuilderInterface;
 use adrianschubek\Database\QueryBuilder\HasQueryBuilder;
+use adrianschubek\ORM\Relations\HasMany;
+use adrianschubek\ORM\Relations\Relation;
 use Doctrine\Common\Inflector\Inflector;
 use ReflectionClass;
 
@@ -51,7 +53,7 @@ abstract class Model implements ModelInterface
         return $erg;
     }
 
-    protected static function getTable()
+    public static function getTable(): string
     {
         if (isset(static::$tablename)) {
             return Inflector::tableize(static::$tablename);
@@ -60,6 +62,17 @@ abstract class Model implements ModelInterface
                 Inflector::pluralize((new ReflectionClass(static::class))->getShortName())
             );
         }
+    }
+
+    public static function create(array $values)
+    {
+        return (new static($values))->save();
+    }
+
+    public function save(): bool
+    {
+//        static::getQueryBuilder()->
+        return false;
     }
 
     public static function find($id)
@@ -72,23 +85,37 @@ abstract class Model implements ModelInterface
         );
     }
 
-    public static function create(array $values)
+    public static function where(string $column, string $value, string $operator = "=")
     {
-        return (new static($values))->save();
+        return static::query(
+            static::getQueryBuilder()
+                ->select()
+                ->from(static::getTable())
+                ->where($column, $value, $operator)
+        );
     }
 
-    public function save(): bool
+    public function hasMany(string $related): Relation
     {
-
+        return new HasMany($related, static::class);
     }
 
     public function __get($name)
     {
+        if (method_exists(static::class, $name)) {
+            $var = $this->$name(static::$primaryKey);
+            dd($var->get($this->{static::getPrimaryKey()}));
+        }
         return $this->fields[$name];
     }
 
     public function __set($name, $value)
     {
         $this->fields[$name] = $value;
+    }
+
+    public static function getPrimaryKey(): string
+    {
+        return static::$primaryKey;
     }
 }
