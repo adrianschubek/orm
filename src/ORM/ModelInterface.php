@@ -33,5 +33,5 @@ interface ModelInterface
 
     public function __set($name, $value);
 
-    public function save(): bool;
+    public function save();
 }

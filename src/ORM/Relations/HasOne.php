@@ -6,9 +6,7 @@
 
 namespace adrianschubek\ORM\Relations;
 
-use Doctrine\Common\Inflector\Inflector;
-
-class HasMany extends Relation
+class HasOne extends Relation
 {
     public function __construct(string $model, string $current)
     {
@@ -23,6 +21,6 @@ class HasMany extends Relation
 
     public function getForeignKey(): string
     {
-        return Inflector::singularize($this->current::getTable()) . "_" . mb_strtolower($this->relatedModel::getPrimaryKey());
+        return $this->relatedModel::getPrimaryKey();
     }
 }

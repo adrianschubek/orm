@@ -11,7 +11,7 @@ interface BuilderInterface
 {
     public function select($columns = "*"): self;
 
-    public function selectDistrinct($columns = "*"): self;
+    public function selectDistinct($columns = "*"): self;
 
     public function from(string $table): self;
 
@@ -59,7 +59,12 @@ interface BuilderInterface
 
     public function toSql(): string;
 
-    public function toRawSql(): string;
+    /**
+     * Returns the interpolated query
+     * Note: This is not used internally.
+     * @deprecated
+     */
+    public function toInterpolatedSql(): string;
 
     public function get();
 

@@ -6,8 +6,6 @@
 
 namespace adrianschubek\ORM\Relations;
 
-use Doctrine\Common\Inflector\Inflector;
-
 class BelongsTo extends Relation
 {
     public function __construct(string $model, string $current)
@@ -16,8 +14,13 @@ class BelongsTo extends Relation
         $this->current = new $current;
     }
 
+    public function get($key)
+    {
+        return $this->relatedModel::where($this->getForeignKey(), $key);
+    }
+
     public function getForeignKey(): string
     {
-        return Inflector::pluralize($this->current::getTable()) . "_" . mb_strtolower($this->relatedModel::getPrimaryKey());
+        return $this->relatedModel::getPrimaryKey();
     }
 }

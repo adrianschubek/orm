@@ -8,6 +8,7 @@ namespace adrianschubek\ORM;
 
 use adrianschubek\Database\QueryBuilder\BuilderInterface;
 use adrianschubek\Database\QueryBuilder\HasQueryBuilder;
+use adrianschubek\ORM\Relations\BelongsTo;
 use adrianschubek\ORM\Relations\HasMany;
 use adrianschubek\ORM\Relations\Relation;
 use Doctrine\Common\Inflector\Inflector;
@@ -66,13 +67,12 @@ abstract class Model implements ModelInterface
 
     public static function create(array $values)
     {
-        return (new static($values))->save();
+        (new static($values))->save();
     }
 
-    public function save(): bool
+    public function save()
     {
-//        static::getQueryBuilder()->
-        return false;
+        static::getQueryBuilder()->insertOrUpdate(static::getTable(), $this->fields)->get();
     }
 
     public static function find($id)
@@ -102,14 +102,14 @@ abstract class Model implements ModelInterface
 
     public function belongsTo(string $related): Relation
     {
-        return new HasMany($related, static::class);
+        return new BelongsTo($related, static::class);
     }
 
     public function __get($name)
     {
         if (method_exists(static::class, $name)) {
             $var = $this->$name(static::$primaryKey);
-            dd($var->get($this->{static::getPrimaryKey()}));
+            return $var->get($this->{static::getPrimaryKey()});
         }
         return $this->fields[$name];
     }

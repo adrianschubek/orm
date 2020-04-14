@@ -13,10 +13,7 @@ abstract class Relation
     protected Model $current;
     protected Model $relatedModel;
 
-    public function get($key)
-    {
-        return $this->relatedModel::where(static::getForeignKey(), $key);
-    }
+    abstract public function get($key);
 
-    abstract public function getForeignKey(): string;
+//    abstract public function getForeignKey(): string;
 }

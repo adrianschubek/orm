@@ -107,7 +107,7 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function selectDistrinct($columns = "*"): BuilderInterface
+    public function selectDistinct($columns = "*"): BuilderInterface
     {
         $this->query[] = "SELECT DISTINCT `" . implode("`, `", (array)$columns) . "`";
 
@@ -148,14 +148,18 @@ class Builder implements BuilderInterface
         foreach ($data as $key => $value) {
             $keys[] = "`{$key}`";
             $this->params[] = $value;
-            $updatequery[] = "`$key` = '$value'";
+            $updatequery[] = "`$key` = ?";
         }
-//        dd($keys, $this->params);
+        $this->params = [...$this->params, ...$this->params];
         $this->query[] = "INSERT INTO $table (" . implode(", ", $keys) . ") VALUES (" .
-            implode(', ', array_fill(0, count($keys), '?'))
+            $this->fillPlaceholder(count($keys))
             . ") ON DUPLICATE KEY UPDATE " . implode(", ", $updatequery);
-
         return $this;
+    }
+
+    protected function fillPlaceholder(int $num): string
+    {
+        return implode(', ', array_fill(0, $num, '?'));
     }
 
     public function update(string $table, array $data): BuilderInterface
@@ -203,17 +207,17 @@ class Builder implements BuilderInterface
 
     public function get()
     {
-        return static::getConnection()->query($this->toRawSql(), $this->params);
-    }
-
-    public function toRawSql(): string
-    {
-        return implode(" ", $this->query);
+        return static::getConnection()->query($this->toSql(), $this->params);
     }
 
     public function toSql(): string
     {
-        return $this->interpolateQuery($this->toRawSql(), $this->params);
+        return implode(" ", $this->query);
+    }
+
+    public function toInterpolatedSql(): string
+    {
+        return $this->interpolateQuery($this->toSql(), $this->params);
     }
 
     private function interpolateQuery(string $query, array $params): string

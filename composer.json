@@ -2,7 +2,7 @@
     "name": "adrianschubek/orm",
     "description": "Active Record based ORM and Query Builder",
     "type": "library",
-    "homepage": "https://adriansoftware.de/orm",
+    "homepage": "https://docs.adriansoftware.de/orm",
     "license": "MIT",
     "authors": [
         {
