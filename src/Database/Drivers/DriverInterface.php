@@ -4,9 +4,9 @@
  * https://adriansoftware.de
  */
 
-namespace adrianschubek\Database\Connection;
+namespace adrianschubek\Database\Drivers;
 
-interface ConnectionInterface
+interface DriverInterface
 {
     public function connection();
 

@@ -7,7 +7,7 @@
 namespace adrianschubek\Database\QueryBuilder;
 
 
-use adrianschubek\Database\Connection\HasDatabaseConnection;
+use adrianschubek\Database\Drivers\HasDatabaseConnection;
 
 class Builder implements BuilderInterface
 {
@@ -200,43 +200,19 @@ class Builder implements BuilderInterface
         return $this;
     }
 
-    public function getAsJSON(): string
+    public function toJson(): string
     {
         return json_encode(array_values($this->get()), JSON_FORCE_OBJECT);
     }
 
     public function get()
     {
-        return static::getConnection()->query($this->toSql(), $this->params);
+        return static::getDriver()->query($this->toSql(), $this->params);
     }
 
     public function toSql(): string
     {
         return implode(" ", $this->query);
-    }
-
-    public function toInterpolatedSql(): string
-    {
-        return $this->interpolateQuery($this->toSql(), $this->params);
-    }
-
-    private function interpolateQuery(string $query, array $params): string
-    {
-        // Fake Query only used for debugging
-        $keys = [];
-
-        foreach ($params as $key => &$value) {
-            $value = "'" . $value . "'";
-            if (is_string($key)) {
-                $keys[] = '/:' . $key . '/';
-            } else {
-                $keys[] = '/[?]/';
-            }
-        }
-
-        $query = preg_replace($keys, $params, $query, 1, $count);
-
-        return $query;
     }
 
     public function whereExists(BuilderInterface $builder): BuilderInterface

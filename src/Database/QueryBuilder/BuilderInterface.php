@@ -59,16 +59,9 @@ interface BuilderInterface
 
     public function toSql(): string;
 
-    /**
-     * Returns the interpolated query
-     * Note: This is not used internally.
-     * @deprecated
-     */
-    public function toInterpolatedSql(): string;
-
     public function get();
 
-    public function getAsJSON(): string;
+    public function toJson(): string;
 
     public function getParams(): array;
 }

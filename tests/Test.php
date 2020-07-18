@@ -4,7 +4,7 @@
  * https://adriansoftware.de
  */
 
-use adrianschubek\Database\Connection\PdoConnection;
+use adrianschubek\Database\Drivers\PdoDriver;
 
 /**
  * Copyright (c) 2019. Adrian Schubek
@@ -14,14 +14,14 @@ class Test2 extends PHPUnit\Framework\TestCase
 {
     public function test_can_create_pdo()
     {
-        $con = new PdoConnection('test', 'localhost', 'root', '');
+        $con = new PdoDriver('test', 'localhost', 'root', '');
 
-        $this->assertInstanceOf(PdoConnection::class, $con);
+        $this->assertInstanceOf(PdoDriver::class, $con);
     }
 
     public function test_()
     {
-        $con = new PdoConnection('test', 'localhost', 'root', '');
+        $con = new PdoDriver('test', 'localhost', 'root', '');
 
 
 

@@ -4,12 +4,12 @@
  * https://adriansoftware.de
  */
 
-namespace adrianschubek\Database\Connection;
+namespace adrianschubek\Database\Drivers;
 
 use PDO;
 use PDOStatement;
 
-class PdoConnection implements ConnectionInterface
+class PdoDriver implements DriverInterface
 {
     private PDO $pdo;
 

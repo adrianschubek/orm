@@ -11,7 +11,7 @@ use adrianschubek\Database\QueryBuilder\HasQueryBuilder;
 use adrianschubek\ORM\Relations\BelongsTo;
 use adrianschubek\ORM\Relations\HasMany;
 use adrianschubek\ORM\Relations\Relation;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use ReflectionClass;
 
 abstract class Model implements ModelInterface
@@ -30,7 +30,7 @@ abstract class Model implements ModelInterface
         }
     }
 
-    public static function all()
+    public static function all(): array
     {
         return static::query(
             static::getQueryBuilder()
@@ -56,11 +56,13 @@ abstract class Model implements ModelInterface
 
     public static function getTable(): string
     {
+        $inflector = InflectorFactory::create()->build();
+
         if (isset(static::$tablename)) {
-            return Inflector::tableize(static::$tablename);
+            return $inflector->tableize(static::$tablename);
         } else {
-            return Inflector::tableize(
-                Inflector::pluralize((new ReflectionClass(static::class))->getShortName())
+            return $inflector->tableize(
+                $inflector->pluralize((new ReflectionClass(static::class))->getShortName())
             );
         }
     }

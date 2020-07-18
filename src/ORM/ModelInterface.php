@@ -19,7 +19,7 @@ interface ModelInterface
 
     public static function getTable(): string;
 
-    public static function all();
+    public static function all(): array ;
 
     public static function where(string $column, string $value, string $operator = "=");
 

@@ -6,7 +6,7 @@
 
 namespace adrianschubek\ORM\Relations;
 
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 
 class HasMany extends Relation
 {
@@ -23,6 +23,8 @@ class HasMany extends Relation
 
     public function getForeignKey(): string
     {
-        return Inflector::singularize($this->current::getTable()) . "_" . mb_strtolower($this->relatedModel::getPrimaryKey());
+        $inflector = InflectorFactory::create()->build();
+
+        return $inflector->singularize($this->current::getTable()) . "_" . mb_strtolower($this->relatedModel::getPrimaryKey());
     }
 }
