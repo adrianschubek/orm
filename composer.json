@@ -19,6 +19,9 @@
     "suggest": {
         "adrianschubek/fastorm": "A better ORM using Data Mapper"
     },
+    "conflict": {
+        "adrianschubek/fastorm": "*"
+    },
     "require": {
         "php": ">=7.4",
         "ext-pdo": "*",
