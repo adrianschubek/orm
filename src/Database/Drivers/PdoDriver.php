@@ -17,7 +17,6 @@ class PdoDriver implements DriverInterface
     {
         $this->pdo = new PDO("mysql:dbname={$database};host={$host}", $user, $password);
         $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, !!($options["emulate"] ?? false));
-//        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, !!($options["fetch"] ?? PDO::FETCH_ASSOC));
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, !!($options["error"] ?? PDO::ERRMODE_EXCEPTION));
     }
 
